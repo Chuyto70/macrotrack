@@ -2,6 +2,7 @@ import json
 import io
 import logging
 from PIL import Image
+from fastapi import HTTPException
 from google import genai
 from app.core.config import settings
 from app.schemas.food import FoodScanResponse, FoodItemDetection
@@ -25,9 +26,17 @@ class AIService:
 
         try:
             image = Image.open(io.BytesIO(image_bytes))
+            # Verificar que sea realmente una imagen intentando cargar los datos
+            image.verify()
+            # La mayoría de las veces image.verify() cierra el archivo, 
+            # así que lo reabrimos para estar seguros
+            image = Image.open(io.BytesIO(image_bytes))
         except Exception as e:
             logger.error(f"Error opening image: {e}")
-            raise e
+            raise HTTPException(
+                status_code=400,
+                detail="El contenido del archivo no es una imagen válida o está corrupto."
+            )
         
         prompt = """
         Analyze this food image and provide a nutritional breakdown in JSON format.

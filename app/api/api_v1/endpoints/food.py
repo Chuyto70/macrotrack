@@ -7,12 +7,17 @@ router = APIRouter()
 @router.post("/scan", response_model=FoodScanResponse)
 async def scan_food(file: UploadFile = File(...)):
     # Validar formatos de imagen comunes de dispositivos móviles
-    allowed_types = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"]
+    # A veces los móviles envían 'application/octet-stream', por lo que permitimos ese tipo
+    # y dejamos que PIL verifique si realmente es una imagen válida.
+    allowed_types = [
+        "image/jpeg", "image/png", "image/webp", "image/heic", "image/heif",
+        "application/octet-stream"
+    ]
     
-    if file.content_type not in allowed_types:
+    if file.content_type not in allowed_types and not file.content_type.startswith("image/"):
         raise HTTPException(
             status_code=400, 
-            detail=f"Formato de archivo no soportado ({file.content_type}). Por favor sube una imagen (JPEG, PNG, WEBP o HEIC)."
+            detail=f"Formato de archivo no soportado ({file.content_type}). Por favor sube una imagen válida."
         )
     
     contents = await file.read()
