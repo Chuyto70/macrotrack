@@ -39,11 +39,12 @@ class AIService:
             )
         
         prompt = """
-        Analyze this food image and provide a nutritional breakdown in JSON format.
-        Include 'detected_food' as a list of items, each with 'name', 'calories', 'protein', 'carbs', 'fats', 'unit', and 'amount'.
-        Also include 'total_calories', 'total_protein', 'total_carbs', 'total_fats', and a 'confidence' score (0.0 to 1.0).
-        If multiple items are found, list them all.
-        The output must be ONLY the JSON string.
+        Analiza esta imagen de comida y proporciona un desglose nutricional en formato JSON.
+        IMPORTANTE: El nombre de los alimentos ('name') DEBE estar en ESPAÑOL.
+        Incluye 'detected_food' como una lista de elementos, cada uno con 'name', 'calories', 'protein', 'carbs', 'fats', 'unit', y 'amount'.
+        También incluye 'total_calories', 'total_protein', 'total_carbs', 'total_fats', y una puntuación de 'confidence' (0.0 a 1.0).
+        Si se encuentran varios elementos, lístalos todos.
+        La salida debe ser ÚNICAMENTE la cadena JSON.
         """
 
         try:
